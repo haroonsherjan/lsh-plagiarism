@@ -16,14 +16,15 @@ def pull_data(folder_name) -> DataFrame:
                     lines.append(line)
         entry = "".join(lines)
         data[subfolder_name] = entry
+        # for testing simplicity
+        break
     return DataFrame.from_dict(data=data, orient='index', columns=["text"])
-            
+
 
 def orchestrate_plagiarism_checker(folder_name: str) -> None:
     data = pull_data(folder_name)
     data = clean_data(data)
     data = featurize_data(data)
-    ## featurize data
     ## plot
     ## find neighbors and distances
     ## evaluate neighbors and distances
