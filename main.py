@@ -16,9 +16,8 @@ def pull_data(folder_name) -> DataFrame:
                     lines.append(line)
         entry = "".join(lines)
         data[subfolder_name] = entry
-        # for testing simplicity
-        break
-    return DataFrame.from_dict(data=data, orient='index', columns=["text"])
+    df = DataFrame.from_dict(data=data, orient='index', columns=["text"])
+    return df
 
 
 def orchestrate_plagiarism_checker(folder_name: str) -> None:
