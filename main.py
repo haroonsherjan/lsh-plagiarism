@@ -2,8 +2,8 @@ import os
 
 from pandas import DataFrame
 
-from clean.main import clean_data
-from featurize.main import featurize_data
+from clean.clean import clean_data
+from featurize.featurize import featurize_data, reduce_features
 
 
 def pull_data(folder_name) -> DataFrame:
@@ -24,6 +24,8 @@ def orchestrate_plagiarism_checker(folder_name: str) -> None:
     data = pull_data(folder_name)
     data = clean_data(data)
     data = featurize_data(data)
+    data = reduce_features(data)
+    data
     ## plot
     ## find neighbors and distances
     ## evaluate neighbors and distances
