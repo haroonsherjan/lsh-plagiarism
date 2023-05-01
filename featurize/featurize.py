@@ -8,6 +8,17 @@ NGRAM_SIZE = 3
 NGRAMS = dict()
 
 
+def remove_empty_columns(column: Series) -> Series:
+    column = column[column != 0]
+    if column.size > 0:
+        return column
+
+
+def reduce_features(data: DataFrame) -> DataFrame:
+    data = data.loc[:, (data != 0).any(axis=0)]
+    return data
+
+
 def multiply_by_idf(column: Series) -> Series:
     num_of_records_with_value = len(column.loc[lambda x: x > 0])
     return column.apply(lambda x: x * math.log((column.size / num_of_records_with_value)))
