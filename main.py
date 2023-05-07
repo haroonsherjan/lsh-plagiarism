@@ -1,23 +1,13 @@
-import os
-
-from pandas import DataFrame
+from pandas import Series
 
 from clean.clean import clean_data
+from data.getData import pull_data
 from featurize.featurize import featurize_data, reduce_features
+from lsh.lsh import create_lsh_model, find_corpus_neighbors
 
 
-def pull_data(folder_name) -> DataFrame:
-    data = dict()
-    for subfolder_name in os.listdir(f'./data/{folder_name}'):
-        lines = list()
-        for file_name in os.listdir(f'./data/{folder_name}/{subfolder_name}'):
-            with open(f'./data/{folder_name}/{subfolder_name}/{file_name}', 'r') as file:
-                for line in file:
-                    lines.append(line)
-        entry = "".join(lines)
-        data[subfolder_name] = entry
-    df = DataFrame.from_dict(data=data, orient='index', columns=["text"])
-    return df
+def calculate_distance(row: Series, neighbor: Series):
+    pass
 
 
 def orchestrate_plagiarism_checker(folder_name: str) -> None:
@@ -25,7 +15,17 @@ def orchestrate_plagiarism_checker(folder_name: str) -> None:
     data = clean_data(data)
     data = featurize_data(data)
     data = reduce_features(data)
-    data
+    model = create_lsh_model(data)
+    neighbors = find_corpus_neighbors(model)
+    neighbors_with_distances = dict()
+    for index, row in data.iterrows():
+        row_neighbors = neighbors.loc[index]
+        neighbors_with_distances[index] = dict()
+        for neighbor_index in row_neighbors:
+            neighbor = data.loc[neighbor_index]
+            neighbors_with_distances[index][neighbor_index] = calculate_distance(row, neighbor)
+
+
     ## plot
     ## find neighbors and distances
     ## evaluate neighbors and distances

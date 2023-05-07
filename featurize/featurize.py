@@ -38,7 +38,8 @@ def calculate_tf(row: Series) -> Series:
 def calculate_tf_idf_of_ngrams(data: DataFrame) -> DataFrame:
     data = data.apply(calculate_tf, axis=1)
     # clean unnecessary columns
-    data = data.drop(columns=['text', 'ngrams'], axis=0)
+    data.index = data['rowIndex']
+    data = data.drop(columns=['text', 'ngrams', 'rowIndex'], axis=0)
     data = data.apply(multiply_by_idf, axis=0)
     return data
 
