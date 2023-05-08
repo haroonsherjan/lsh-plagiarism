@@ -4,7 +4,7 @@ import pandas as pd
 from pandas import DataFrame, Series
 
 
-NGRAM_SIZE = 3
+NGRAM_SIZE = 5
 NGRAMS = dict()
 
 
