@@ -9,6 +9,7 @@ def orchestrate_plagiarism_checker(folder_name: str) -> None:
     data = clean_data(data)
     data = featurize_data(data)
     data = reduce_features(data)
+    print(data.shape)
     model = create_lsh_model(data)
     neighbors = find_corpus_neighbors(model)
     neighbors_with_distance = calculate_distance(data, neighbors)

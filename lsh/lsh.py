@@ -4,6 +4,7 @@ from itertools import combinations
 import numpy as np
 from pandas import DataFrame, Series
 from sklearn.metrics import pairwise_distances
+from featurize.featurize import reduce_features
 
 NEIGHBOR_DISTANCE = 1
 NUM_OF_BITS = 8
@@ -59,12 +60,17 @@ def find_corpus_neighbors(model: dict) -> Series:
     return neighbors
 
 
-def calculate_distance(data: DataFrame, neighbors: DataFrame):
+def calculate_distance(data: DataFrame, neighbors: Series):
     neighbors_with_distances = dict()
     for index, row in data.iterrows():
         row_neighbor_indices = neighbors.loc[index]
+        row_columns = row[row != 0].index.values.tolist()
         if len(row_neighbor_indices) > 0:
             row_neighbors = data.loc[np.array(list(row_neighbor_indices))]
+            row_neighbors_columns = reduce_features(row_neighbors).columns.values.tolist()
+            comparison_columns = row_columns + row_neighbors_columns
+            row = row.loc[comparison_columns]
+            row_neighbors = row_neighbors[comparison_columns]
             row_neighbors['distances'] = pairwise_distances(np.reshape(row_neighbors, newshape=(len(row_neighbor_indices), -1)), np.reshape(row, newshape=(1, -1)), metric='cosine').flatten()
             neighbors_with_distances[index] = row_neighbors['distances'].to_dict()
     return neighbors_with_distances
